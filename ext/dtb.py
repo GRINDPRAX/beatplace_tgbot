@@ -30,7 +30,7 @@ async def createDB():
                 read INT
     )""")
 
-    sql.execute("""CREATE TABLE IF NOT EXIXST bot(
+    sql.execute("""CREATE TABLE IF NOT EXISTS bot(
                 stop INT
     )""")
 

@@ -1,20 +1,13 @@
-from aiogram import types, Router
-from aiogram import Bot, Dispatcher, html
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart, Command, StateFilter
-from aiogram.types import Message
+from aiogram import types, Router, F
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram import F
 
 from rich import print
 
-import aiogram_dialog
+
 from aiogram_dialog.widgets.text import Const, Jinja, Format, Multi, Progress
 from aiogram_dialog import (
-    Dialog, DialogManager, setup_dialogs, StartMode, Window, BaseDialogManager
+    Dialog, DialogManager, setup_dialogs, Window, BaseDialogManager
 )
 from aiogram_dialog.widgets.kbd import Checkbox, Next, SwitchTo, Radio, ScrollingGroup, Button, Back, Row
 from aiogram_dialog.widgets.input import MessageInput, TextInput
@@ -23,6 +16,7 @@ import random, asyncio
 
 from ext import dtb
 from config import shop_channel_id, project_channel_id
+
 
 states = {}
 
@@ -237,11 +231,6 @@ async def getbeat(message: types.Message, wid: MessageInput, aiogram_dialog: Dia
 
 
 
-@inlload.message(Command("test"))
-async def prtest(message: Message, dialog_manager: DialogManager):
-
-    await dialog_manager.start(Beat.bar)
-    asyncio.create_task(background(dialog_manager.bg()))
 
 
 
@@ -270,11 +259,12 @@ async def getproj(message: types.Message, wid: MessageInput, aiogram_dialog: Dia
                 message.document,
                 destination=pthfolder
             )
+            
 
-        await message.answer("Проект скачан")
-        aiogram_dialog.dialog_data['project'] = path_proj
-        await aiogram_dialog.next()
-        return
+            await message.answer("Проект скачан")
+            aiogram_dialog.dialog_data['project'] = path_proj
+            await aiogram_dialog.next()
+            return
     
     bldr = InlineKeyboardBuilder()
     bldr.add(
@@ -507,45 +497,6 @@ dlg = Dialog(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@inlload.callback_query(F.data=="cancel_load", StateFilter(Beat.file))
-async def cancelload(call: types.CallbackQuery, state: FSMContext):
-
-    await call.answer("Загрузка бита отменена")
-
-    await state.clear()
-
-@inlload.callback_query(F.data=="cancel_load", StateFilter(None))
-async def cancelload(call: types.CallbackQuery, state: FSMContext):
-
-    await call.answer("Ты ничего не загружаешь")
-
-    await state.set_data({})
-
-@inlload.callback_query(F.data=="loadbeat")
-async def waitmp3inl(call: types.CallbackQuery, dialog_manager: DialogManager):
-
-    await dialog_manager.start(Beat.file)
-    
-
-
-@inlload.message(Command("loadbeat"))
-async def waitmp3(message: Message, dialog_manager: DialogManager):
-
-    await dialog_manager.start(Beat.file)
 
 
 
